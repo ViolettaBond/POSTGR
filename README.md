@@ -1,5 +1,6 @@
 # POSTGR
 
+
 CREATE TABLE blog_posts (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -19,6 +20,43 @@ CREATE TABLE blog_sections (
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     sort_order INTEGER NOT NULL
+);
+
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    author_key VARCHAR(50) NOT NULL,
+    author_name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    publish_date DATE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    image_key VARCHAR(50),
+    is_featured BOOLEAN DEFAULT FALSE,
+    post_id INT REFERENCES blog_posts(id)
+);
+
+CREATE TABLE video (
+    id SERIAL PRIMARY KEY,
+    cover_key VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE contact_requests (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE faq (
+    id SERIAL PRIMARY KEY,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    sort_order INT DEFAULT 0
 );
 
 CREATE INDEX idx_blog_posts_slug ON blog_posts(slug);
@@ -94,101 +132,75 @@ VALUES
         9
     );
 
-
-CREATE TABLE articles (
-    id SERIAL PRIMARY KEY,
-    author_key VARCHAR(50) NOT NULL,
-    author_name VARCHAR(100) NOT NULL,
-    category VARCHAR(50) NOT NULL,
-    publish_date DATE NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    image_key VARCHAR(50),
-    is_featured BOOLEAN DEFAULT FALSE,
-    post_id INT REFERENCES posts(id)
-);
-
 INSERT INTO articles (author_key, author_name, category, publish_date, title, description, image_key, is_featured, post_id)
 VALUES
-('john', 'Jane Smith', 'Environment', '2023-10-15',
- 'Global Climate Summit Addresses Urgent Climate Action',
- 'World leaders gathered at the Global Climate Summit to discuss urgent climate action, emissions reductions, and renewable energy targets.',
- 'global', TRUE, 1),
+    ('john', 'Jane Smith', 'Environment', '2023-10-15',
+     'Global Climate Summit Addresses Urgent Climate Action',
+     'World leaders gathered at the Global Climate Summit to discuss urgent climate action, emissions reductions, and renewable energy targets.',
+     'global', TRUE, 1),
+    ('sarah', 'Sarah Ethicist', 'Politics', '2023-10-14',
+     'A Decisive Victory for Progressive Policies',
+     'A deep dive into the recent political shifts.',
+     'politics', FALSE, 1),
+    ('john', 'John Techson', 'Technology', '2023-10-13',
+     'Tech Giants Unveil Cutting-Edge AI Innovations',
+     'Exploring the newest AI breakthroughs from leading tech companies.',
+     'technology', FALSE, 1),
+    ('astronomer', 'Dr. Emily', 'Health', '2023-10-12',
+     'COVID-19 Variants',
+     'The latest research on COVID-19 variants and vaccine effectiveness.',
+     'health', FALSE, 1),
+    ('john', 'John Techson', 'Technology', '2023-10-15',
+     'Tech Giants Announce New Product Line',
+     'Explore the latest innovations from tech industry leaders, unveiling new products that promise to transform the digital landscape',
+     NULL, FALSE, 1),
+    ('sarah', 'Sarah Ethicist', 'Technology', '2023-10-11',
+     'The Future of Autonomous Vehicles',
+     'An in-depth analysis of the rapid advancements in autonomous vehicle technology and their impact on transportation.',
+     NULL, FALSE, 1),
+    ('astronomer', 'Astronomer X', 'Technology', '2023-12-10',
+     'Tech Startups Secure Record Funding',
+     'An overview of the recent surge in funding for tech startups, shaping the entrepreneurial landscape.',
+     NULL, FALSE, 1);
 
-('sarah', 'Sarah Ethicist', 'Politics', '2023-10-14',
- 'A Decisive Victory for Progressive Policies',
- 'A deep dive into the recent political shifts.',
- 'politics', FALSE, 1),
-
-('john', 'John Techson', 'Technology', '2023-10-13',
- 'Tech Giants Unveil Cutting-Edge AI Innovations',
- 'Exploring the newest AI breakthroughs from leading tech companies.',
- 'technology', FALSE, 1),
-
-('astronomer', 'Dr. Emily', 'Health', '2023-10-12',
- 'COVID-19 Variants',
- 'The latest research on COVID-19 variants and vaccine effectiveness.',
- 'health', FALSE, 1),
-
-('john', 'John Techson', 'Technology', '2023-10-15',
- 'Tech Giants Announce New Product Line',
- 'Explore the latest innovations from tech industry leaders, unveiling new products that promise to transform the digital landscape',
- NULL, FALSE, 1),
-
-('sarah', 'Sarah Ethicist', 'Technology', '2023-10-11',
- 'The Future of Autonomous Vehicles',
- 'An in-depth analysis of the rapid advancements in autonomous vehicle technology and their impact on transportation.',
- NULL, FALSE, 1),
-
-('astronomer', 'Astronomer X', 'Technology', '2023-12-10',
- 'Tech Startups Secure Record Funding',
- 'An overview of the recent surge in funding for tech startups, shaping the entrepreneurial landscape.',
- NULL, FALSE, 1);
-
-
-CREATE TABLE video (
-    id SERIAL PRIMARY KEY,
-    cover_key VARCHAR(50) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT
-);
+INSERT INTO articles (author_key, author_name, category, publish_date, title, description, image_key, is_featured)
+VALUES
+    ('john', 'John Techson', 'Quantum Computing', '2023-10-15',
+     'The Quantum Leap in Computing',
+     'Explore the revolution in quantum computing, its applications, and its potential impact on various industries.',
+     NULL, FALSE),
+    ('sarah', 'Sarah Ethicist', 'AI Ethics', '2023-11-05',
+     'The Ethical Dilemmas of AI',
+     'A deep dive into ethical challenges posed by AI, including bias, privacy, and transparency.',
+     NULL, FALSE),
+    ('astronomer', 'Astronomer X', 'Space Exploration', '2023-12-10',
+     'The Mars Colonization Challenge',
+     'Exploring the technical and logistical challenges of human colonization on Mars.',
+     NULL, FALSE),
+    ('john', 'John Techson', 'Biotechnology', '2023-11-20',
+     'CRISPR and the Future of Gene Editing',
+     'How biotechnology is reshaping medicine, agriculture, and ethics.',
+     NULL, FALSE),
+    ('sarah', 'Sarah Ethicist', 'Renewable Energy', '2023-12-01',
+     'Solar Power at Scale',
+     'The economics and engineering of large-scale renewable energy projects.',
+     NULL, FALSE);
 
 INSERT INTO video (cover_key, title, description)
 VALUES
-('mars', 'Mars Exploration: Unveiling Alien Landscapes',
- 'Embark on a journey through the Red Planet''s breathtaking landscapes and uncover the mysteries of Mars.'),
+    ('mars', 'Mars Exploration: Unveiling Alien Landscapes',
+     'Embark on a journey through the Red Planet''s breathtaking landscapes and uncover the mysteries of Mars.'),
+    ('blockchain', 'Blockchain Explained: A Revolution in Finance',
+     'Delve into the world of blockchain technology and its transformative impact on the financial industry.'),
+    ('mental', 'Breaking the Silence: Mental Health Awareness in the Workplace',
+     'An exploration of the importance of mental health awareness and the initiatives reshaping workplaces for employee well-being.'),
+    ('invest', 'Revolutionizing Investment Strategies',
+     'An in-depth look at global efforts to conserve biodiversity and safeguard endangered species from extinction.');
 
-('blockchain', 'Blockchain Explained: A Revolution in Finance',
- 'Delve into the world of blockchain technology and its transformative impact on the financial industry.'),
-
-('mental', 'Breaking the Silence: Mental Health Awareness in the Workplace',
- 'An exploration of the importance of mental health awareness and the initiatives reshaping workplaces for employee well-being.'),
-
-('invest', 'Revolutionizing Investment Strategies',
- 'An in-depth look at global efforts to conserve biodiversity and safeguard endangered species from extinction.');
-
-
-
-CREATE TABLE contact_requests (
-    id SERIAL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(50),
-    message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE faq (
-    id SERIAL PRIMARY KEY,
-    question TEXT NOT NULL,
-    answer TEXT NOT NULL,
-    sort_order INT DEFAULT 0
-);
-
-INSERT INTO faq (question, answer, sort_order) VALUES
-('What is AI?', 'AI stands for Artificial Intelligence, which refers to the simulation of human intelligence in machines. It enables them to perform tasks like problem-solving, learning, and decision-making.', 1),
-('How can I listen to your podcasts?', 'You can listen on our website, Spotify, Apple Podcasts, Google Podcasts, and YouTube.', 2),
-('Are your podcasts free to listen to?', 'Yes, all our podcasts are completely free.', 3),
-('Can I download episodes to listen offline?', 'Yes, you can download episodes directly from the episode page.', 4),
-('How often do you release new episodes?', 'We release a new episode every week on Wednesday.', 5);
+INSERT INTO faq (question, answer, sort_order)
+VALUES
+    ('What is AI?', 'AI stands for Artificial Intelligence, which refers to the simulation of human intelligence in machines. It enables them to perform tasks like problem-solving, learning, and decision-making.', 1),
+    ('How can I listen to your podcasts?', 'You can listen on our website, Spotify, Apple Podcasts, Google Podcasts, and YouTube.', 2),
+    ('Are your podcasts free to listen to?', 'Yes, all our podcasts are completely free.', 3),
+    ('Can I download episodes to listen offline?', 'Yes, you can download episodes directly from the episode page.', 4),
+    ('How often do you release new episodes?', 'We release a new episode every week on Wednesday.', 5);
